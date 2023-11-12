@@ -59,3 +59,29 @@ def staffLogin(request):
             return redirect('staffLogin')
 
     return render(request, 'staff_login.html')
+
+def studentRegister(request):
+    if request.method == 'POST':
+        student_id = request.POST['studentid']
+        email = request.POST['email']
+        password = request.POST['password']
+        password2 = request.POST['password2']
+
+        if password == password2:
+            if User.objects.filter(username=student_id).exists():
+                messages.info(request, 'Username Taken')
+                return redirect('studentRegister')
+            elif User.objects.filter(email=email).exists():
+                messages.info(request, 'Email Taken')
+                return redirect('studentRegister')
+            else:
+                user = User.objects.create_user(username=student_id, email=email, password=password)
+                user.save()
+
+                student = Student.objects.create(user=user, student_id=student_id, email=email)
+                student.save()
+                return redirect('studentLogin')
+        else:
+            messages.info(request, 'Password not matching')
+            return redirect('studentRegister')  
+    return render(request, 'student_reg.html')
