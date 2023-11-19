@@ -1,0 +1,136 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+  	<title>home</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<link href="{% static 'https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' %}" rel='stylesheet' type='text/css'>
+
+	<link rel="stylesheet" href="{% static 'https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' %}">
+	
+	<link rel="stylesheet" href="{% static '/home/css/style.css' %}">
+	<link rel="stylesheet" href="{% static '/profile/style.css' %}">
+
+	</head>
+	<body>
+	<section class="ftco-section">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-md-6 text-center mb-5">
+				</div>
+			</div>
+		</div>
+		
+		<div class="container">
+			<div class="row justify-content-between">
+				<div class="col">
+					<a class="navbar-brand" href="/student-profile/"> University Help Desk <span>Student</span></a>
+				</div>
+				<!-- <div class="col d-flex justify-content-end">
+					<div class="social-media">
+		    		<p class="mb-0 d-flex">
+		    			<a href="#" class="d-flex align-items-center justify-content-center"><span class="fa fa-facebook"><i class="sr-only">Facebook</i></span></a>
+		    			<a href="#" class="d-flex align-items-center justify-content-center"><span class="fa fa-twitter"><i class="sr-only">Twitter</i></span></a>
+		    			<a href="#" class="d-flex align-items-center justify-content-center"><span class="fa fa-instagram"><i class="sr-only">Instagram</i></span></a>
+		    			<a href="#" class="d-flex align-items-center justify-content-center"><span class="fa fa-dribbble"><i class="sr-only">Dribbble</i></span></a>
+		    		</p>
+	        </div> -->
+				</div>
+			</div>
+		</div>
+		<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+	    <div class="container">
+	    
+	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+	        <span class="fa fa-bars"></span> Menu
+	      </button>
+
+
+				<!-- <form action="#" class="searchform order-lg-last">
+          <div class="form-group d-flex">
+            <input type="text" class="form-control pl-3" placeholder="Search">
+            <button type="submit" placeholder="" class="form-control search"><span class="fa fa-search"></span></button>
+          </div>
+        </form> -->
+
+
+
+	      <div class="collapse navbar-collapse" id="ftco-nav">
+	        <ul class="navbar-nav mr-auto">
+	        	<li class="nav-item"><a href="/student-profile/" class="nav-link">Profile</a></li>
+	        	<li class="nav-item dropdown">
+            </li>
+				<li class="nav-item"><a href="/student-announcement-view/" class="nav-link">Announcement</a></li>
+                <li class="nav-item active"><a href="/post-complain/" class="nav-link">Post</a></li>
+				<li class="nav-item active"><a href="/complain-student-view/" class="nav-link">Complain</a></li>
+
+	        	<li class="nav-item"><a href="/course-view/" class="nav-link">Course</a></li>
+	          <!-- <li class="nav-item"><a href="#" class="nav-link">Contact</a></li> -->
+	        </ul>
+	      </div>
+	    </div>
+	  </nav>
+    <!-- END nav -->
+
+
+
+{% for c in complain%}
+<br>
+<section>
+    <div class="card text-center" style = "background: linear-gradient(to top right, #ffffea 0%, #ffcfcf 100%)">
+        <div class="card-header">
+          <ul class="nav nav-pills card-header-pills">
+            {% if c.status == "resolved" %}
+            <li class="nav-item">
+                <button type="button" class="btn btn-success">Resolved</button>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link disabled" href="">By {{c.resolved_by}} </a>
+            </li>
+            
+            {% elif c.status == "pending" %}
+            <li class="nav-item">
+                <button type="button" class="btn btn-warning">Pending</button>
+            </li>
+
+            {% else %}
+            <li class="nav-item">
+                <button type="button" class="btn btn-danger">Rejected</button>
+            </li>
+
+
+
+            {% endif %}
+            <li class="nav-item">
+                <a class="nav-link disabled" href="">[ Posted on - {{c.datetime}} ]</a>
+              </li>
+            
+          </ul>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">{{c.tag}}</h5>
+          <p class="card-text">{{c.statement}}</p>
+        
+        </div>
+      </div>
+    </section>
+	
+    {% endfor %}
+
+      
+
+      
+	</section>
+
+	
+<script src="{% static '/home/js/jquery.min.js' %}"></script>
+  <script src="{% static '/home/js/popper.js' %}"></script>
+  <script src="{% static '/home/js/bootstrap.min.js' %}"></script>
+  <script src="{% static '/home/js/main.js' %}"></script>
+
+	</body>
+</html>

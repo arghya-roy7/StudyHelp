@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
-from .models import Student, Staff, Faculty
+from .models import Student, Staff, Faculty, Announcement, Complain
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 
@@ -19,7 +19,7 @@ def studentLogin(request):
 
         if user is not None and Student.objects.filter(student_id=student_id).exists():
             auth.login(request, user)
-            return redirect('index')
+            return redirect(studentProfile)
         else:
             messages.info(request, 'Invalid Credentials')
             return redirect('studentLogin')
@@ -52,8 +52,8 @@ def staffLogin(request):
 
         if user is not None and Staff.objects.filter(user=user).exists():
             auth.login(request, user)
-            # return redirect('staffProfile')
-            return HttpResponse("staff")
+            return redirect('staffProfile')
+            #return HttpResponse("staff")
         else:
             messages.info(request, 'Invalid Credentials')
             return redirect('staffLogin')
@@ -85,3 +85,165 @@ def studentRegister(request):
             messages.info(request, 'Password not matching')
             return redirect('studentRegister')  
     return render(request, 'student_reg.html')
+
+
+
+
+#========================================================================= profiles
+@login_required(login_url='studentLogin')
+def studentProfile(request):
+    if Student.objects.filter(user=request.user).exists():
+        user = request.user
+        obj = User.objects.get(username=user)
+
+        if Student.objects.filter(user=obj).exists():
+            obj = Student.objects.get(user=obj)
+            return render(request, 'student_profile.html', {'user': obj, "student": "student"})
+        
+        return render(request, 'student_profile.html', {'user': obj})
+    else:
+        return redirect('studentLogin')
+    
+
+@login_required(login_url='staffLogin')
+def staffProfile(request):
+    if Staff.objects.filter(user=request.user).exists():
+        user = request.user
+        obj = User.objects.get(username=user)
+        if Staff.objects.filter(user=obj).exists():
+            obj = Staff.objects.get(user=obj)
+            return render(request, 'staff_profile.html', {'user': obj, "staff": "staff"})
+        return render(request, 'staff_profile.html', {'user': obj})
+    else:
+        return redirect('staffLogin')
+    
+###########################################################################################
+
+
+@login_required(login_url='studentLogin')
+def studentAnnouncementView(request):
+    if Student.objects.filter(user=request.user).exists():
+        obj = Announcement.objects.all()
+        return render(request, 'student_announcement_view.html', {'obj': obj[::-1]})
+    else:
+        return redirect('studentLogin')
+    
+@login_required(login_url='staffLogin')
+def staffAnnouncementView(request):
+    if Staff.objects.filter(user=request.user).exists():
+        obj = Announcement.objects.all()
+        if request.method == 'POST':
+            announcement_id = request.POST['aid']
+            announcement = Announcement.objects.get(anumber = announcement_id)
+            announcement.delete()
+
+        return render(request, 'staff_announcement_view.html', {'obj': obj[::-1]})
+    else:
+        return redirect('staffLogin')
+    
+
+
+@login_required(login_url='staffLogin')
+def postAnnouncement(request):
+    if Staff.objects.filter(user=request.user).exists():
+        cuser = Staff.objects.get(user=request.user)
+        if request.method == 'POST':
+            subject = request.POST['subject']
+            source = request.POST['source']
+            statement = request.POST['statement']
+            announcement = Announcement.objects.create(subject=subject, source=source, statement=statement, datetime = datetime.now(), posted_by=cuser)
+            announcement.save()
+            return redirect('staffAnnouncementView')
+        return render(request, 'post_announcement.html')
+    else:
+        return redirect('staffLogin')
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@login_required(login_url='studentLogin')
+def complainStudentView(request):
+    if Student.objects.filter(user=request.user).exists():
+        user = request.user
+        complain = Complain.objects.all()
+        # n_complain = []
+        # for c in complain:
+        #     if c.posted_by == user:
+        #         n_complain.append(c)
+        # context = {
+        #     'complain': n_complain[::-1]
+        # }
+        context = {
+            'complain': complain[::-1]
+        }
+        return render(request, 'complain_student_view.html', context)
+    else:
+        return redirect('studentLogin')
+    
+
+@login_required(login_url='staffLogin')
+def complainStaffView(request):
+    if Staff.objects.filter(user=request.user).exists():
+        cuser = Staff.objects.get(user=request.user)
+        complain = Complain.objects.all()
+        context = {
+            'complain': complain[::-1]
+        }
+        if request.method == 'POST' and request.POST['status'] == 'resolved':
+            cnum = request.POST['cnum']
+            status = "resolved"
+            resolved_by = cuser
+
+            complain = Complain.objects.get(cnumber=cnum)
+            complain.status = status
+            complain.resolved_by = resolved_by
+            complain.save()
+            return redirect('complainStaffView')
+        elif request.method == 'POST' and request.POST['status'] == 'rejected':
+            cnum = request.POST['cnum']
+            status = "rejected"
+            resolved_by = cuser
+
+            complain = Complain.objects.get(cnumber=cnum)
+            complain.status = status
+            complain.resolved_by = resolved_by
+            complain.save()
+            return redirect('complainStaffView')
+        return render(request, 'complain_staff_view.html', context)
+    else:
+        return redirect('staffLogin')
+    
+
+
+
+@login_required(login_url='studentLogin')
+def postComplain(request):
+    if Student.objects.filter(user=request.user).exists():
+        cuser = Student.objects.get(user=request.user)
+        if request.method == 'POST':
+            tag = request.POST['tag']
+            statement = request.POST['statement']
+
+            complain = Complain.objects.create(tag=tag, statement=statement, datetime = datetime.now(), posted_by=cuser)
+            complain.save()
+            return redirect('complainStudentView')
+        return render(request, 'post_complain.html')
+    else:
+        return redirect('studentLogin')
+
