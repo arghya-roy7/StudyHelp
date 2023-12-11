@@ -1,0 +1,10 @@
+{%extends 'staff_base.html'%}
+{%block main-content%}
+<div class="container h-100">
+    <form action="" method="post">
+        {%csrf_token%}
+        {{form.as_p}}
+        <button type="submit" class="btn btn-success btn-md">Confirm</button>
+    </form>
+</div>
+{%endblock main-content%}

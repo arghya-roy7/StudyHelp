@@ -1,0 +1,28 @@
+{%extends 'staff_base.html'%}
+{%block main-content%}
+<section>
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Count</th>
+            <th scope="col">First Name</th>
+            <th scope="col">Last Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Modify</th>
+          </tr>
+        </thead>
+        <tbody>
+            {%for faculty in faculties%}
+          <tr>
+            <th scope="row">{{forloop.counter}}</th>
+            <td>{{faculty.first_name}}</td>
+            <td>{{faculty.last_name}}</td>
+            <td>{{faculty.email}}</td>
+            <td><a href="{%url 'staff_update_faculty' faculty.id %}" class="btn btn-sm btn-success">Update</a></td>
+          </tr>
+        {%endfor%}
+        </tbody>
+      </table>
+
+</section>
+{%endblock main-content%}

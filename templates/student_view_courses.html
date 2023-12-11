@@ -1,0 +1,27 @@
+{%extends 'student_base.html'%}
+
+{%block main-content%}
+<section>
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Count</th>
+            <th scope="col">Course Name</th>
+            <th scope="col">Course Code</th>
+            <th scope="col">Faculty Initial</th>
+          </tr>
+        </thead>
+        <tbody>
+            {%for enroll in courses%}
+          <tr>
+            <th scope="row">{{forloop.counter}}</th>
+            <td>{{enroll.course.course_name}}</td>
+            <td>{{enroll.course.course_id}}</td>
+            <td>{{enroll.course.course_faculty.faculty_initial}}</td>
+          </tr>
+        {%endfor%}
+        </tbody>
+      </table>
+
+</section>
+{%endblock main-content%}

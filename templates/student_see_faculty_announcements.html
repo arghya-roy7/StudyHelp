@@ -1,0 +1,13 @@
+{%extends 'student_base.html' %}
+
+{%block main-content%}
+<div class="container">
+    {%for announcement in announcements%}
+    <div class="my-2 p-2 bg-secondary">
+        <h4>Course: {{announcement.course.course_id}} Posted By Faculty: {{announcement.posted_by.faculty_initial}}</h4>
+        <h5 class="text-warning">{{announcement.statement}}</h5>
+    </div>
+    {%endfor%}
+</div>
+
+{%endblock main-content%}

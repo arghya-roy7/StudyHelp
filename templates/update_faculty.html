@@ -1,0 +1,10 @@
+{%extends 'staff_base.html' %}
+{%block main-content%}
+<div class="container">
+    <form action="" method="post">
+        {%csrf_token%}
+        {{form.as_p}}
+        <button type="submit" class="btn btn-warning btn-md">Update</button>
+    </form>
+</div>
+{%endblock main-content%}

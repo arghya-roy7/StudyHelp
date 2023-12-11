@@ -1,0 +1,10 @@
+{%extends 'faculty_base.html' %}
+{%block main-content%}
+<div class="container">
+    <form method="POST">
+       {%csrf_token%}
+       {{form.as_p}}
+       <button type="submit" class="btn btn-primary btn-md">Announce</button>
+      </form>
+</div>
+{%endblock main-content%}

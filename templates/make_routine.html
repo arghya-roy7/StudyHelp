@@ -1,0 +1,10 @@
+{%extends 'faculty_base.html'%} {%block main-content%}
+<div class="container">
+    <a href="{% url 'make_exam_routine' course.id %}" class="btn btn-warning btn-lg">Exam Routine</a>
+  <form action="" method="post">
+    {%csrf_token%}
+    {{form.as_p}}
+    <button type="submit" class="btn btn-success">Confirm</button>
+  </form>
+</div>
+{%endblock main-content%}
